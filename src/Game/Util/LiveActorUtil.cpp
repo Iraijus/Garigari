@@ -73,19 +73,12 @@ namespace {
         return parts;
     }
 
-    void calcCollisionMtx(TPos3f* pMtx, const LiveActor* pActor) NO_INLINE {
+    void calcCollisionMtx(TPos3f* pMtx, const LiveActor* pActor, bool b) NO_INLINE {
         pMtx->set(pActor->getBaseMtx());
 
         f32 scale = pActor->mScale.x;
-        pMtx->mMtx[0][0] *= scale;
-        pMtx->mMtx[0][1] *= scale;
-        pMtx->mMtx[0][2] *= scale;
-        pMtx->mMtx[1][0] *= scale;
-        pMtx->mMtx[1][1] *= scale;
-        pMtx->mMtx[1][2] *= scale;
-        pMtx->mMtx[2][0] *= scale;
-        pMtx->mMtx[2][1] *= scale;
-        pMtx->mMtx[2][2] *= scale;
+
+        pMtx->scaleInline(scale);
     }
 
     bool isShowModel(LiveActor* pActor) NO_INLINE {
@@ -204,7 +197,7 @@ namespace {
 };  // namespace
 
 namespace MR {
-    void setPosition(LiveActor* pActor, const JGeometry::TVec3< float >& rPosition) {
+    void setPosition(LiveActor* pActor, const TVec3f& rPosition) {
         pActor->mPosition.set(rPosition);
     }
 
@@ -212,7 +205,7 @@ namespace MR {
         pActor->mPosition.set(x, y, z);
     }
 
-    void setRotation(LiveActor* pActor, const JGeometry::TVec3< float >& rRotation) {
+    void setRotation(LiveActor* pActor, const TVec3f& rRotation) {
         pActor->mRotation.set(rRotation);
     }
 
@@ -226,7 +219,7 @@ namespace MR {
         pActor->mRotation.z = rRotation;
     }
 
-    void setScale(LiveActor* pActor, const JGeometry::TVec3< float >& rScale) {
+    void setScale(LiveActor* pActor, const TVec3f& rScale) {
         pActor->mScale.set(rScale);
     }
 
@@ -304,7 +297,7 @@ namespace MR {
         clippingDirector->mActorHolder->setTypeToSphere(pActor, clippingRadius, nullptr);
     }
 
-    void setClippingTypeSphere(LiveActor* pActor, f32 clippingRadius, const JGeometry::TVec3< float >* pClippingPos) {
+    void setClippingTypeSphere(LiveActor* pActor, f32 clippingRadius, const TVec3f* pClippingPos) {
         ClippingDirector* clippingDirector = MR::getClippingDirector();
 
         clippingDirector->mActorHolder->setTypeToSphere(pActor, clippingRadius, pClippingPos);
@@ -321,35 +314,35 @@ namespace MR {
     }
 
     void setClippingFar50m(LiveActor* pActor) {
-        MR::getClippingDirector()->mActorHolder->setFarClipLevel(pActor, 7);
+        MR::getClippingDirector()->mActorHolder->setFarClipLevel(pActor, ClippingDistance_50m);
     }
 
     void setClippingFar100m(LiveActor* pActor) {
-        MR::getClippingDirector()->mActorHolder->setFarClipLevel(pActor, 6);
+        MR::getClippingDirector()->mActorHolder->setFarClipLevel(pActor, ClippingDistance_100m);
     }
 
     void setClippingFar200m(LiveActor* pActor) {
-        MR::getClippingDirector()->mActorHolder->setFarClipLevel(pActor, 5);
+        MR::getClippingDirector()->mActorHolder->setFarClipLevel(pActor, ClippingDistance_200m);
     }
 
     void setClippingFar300m(LiveActor* pActor) {
-        MR::getClippingDirector()->mActorHolder->setFarClipLevel(pActor, 4);
+        MR::getClippingDirector()->mActorHolder->setFarClipLevel(pActor, ClippingDistance_300m);
     }
 
     void setClippingFar400m(LiveActor* pActor) {
-        MR::getClippingDirector()->mActorHolder->setFarClipLevel(pActor, 3);
+        MR::getClippingDirector()->mActorHolder->setFarClipLevel(pActor, ClippingDistance_400m);
     }
 
     void setClippingFar500m(LiveActor* pActor) {
-        MR::getClippingDirector()->mActorHolder->setFarClipLevel(pActor, 2);
+        MR::getClippingDirector()->mActorHolder->setFarClipLevel(pActor, ClippingDistance_500m);
     }
 
     void setClippingFar600m(LiveActor* pActor) {
-        MR::getClippingDirector()->mActorHolder->setFarClipLevel(pActor, 1);
+        MR::getClippingDirector()->mActorHolder->setFarClipLevel(pActor, ClippingDistance_600m);
     }
 
     void setClippingFarMax(LiveActor* pActor) {
-        MR::getClippingDirector()->mActorHolder->setFarClipLevel(pActor, 0);
+        MR::getClippingDirector()->mActorHolder->setFarClipLevel(pActor, ClippingDistance_Max);
     }
 
     void setClippingFar(LiveActor* pActor, f32 farDistance) {
@@ -1625,6 +1618,7 @@ namespace MR {
         }
 
         pParts->_CC = true;
+        pParts->_CD = true;
     }
 
     void invalidateCollisionParts(LiveActor* pActor) {
@@ -1646,7 +1640,7 @@ namespace MR {
             validateCollisionParts(pActor);
         }
 
-        pActor->mCollisionParts->_CD = true;
+        pActor->mCollisionParts->_CE = true;
     }
 
     void onUpdateCollisionPartsOnetimeImmediately(LiveActor* pActor) {
@@ -1657,7 +1651,7 @@ namespace MR {
         }
 
         pParts = pActor->mCollisionParts;
-        pParts->_CE = true;
+        pParts->_CF = true;
         makeMtxTR(pActor->getBaseMtx(), pActor);
         setCollisionMtx(pActor, pActor->mCollisionParts);
         pParts->updateMtx();
@@ -1670,7 +1664,7 @@ namespace MR {
             validateCollisionParts(pActor);
         }
 
-        pActor->mCollisionParts->_CD = false;
+        pActor->mCollisionParts->_CE = false;
     }
 
     void resetAllCollisionMtx(LiveActor* pActor) {
@@ -1682,7 +1676,7 @@ namespace MR {
         }
 
         TPos3f mtx;
-        ::calcCollisionMtx(&mtx, pActor);
+        ::calcCollisionMtx(&mtx, pActor, false);
         pParts->resetAllMtx(mtx);
     }
 
@@ -1701,7 +1695,7 @@ namespace MR {
         }
 
         TPos3f mtx;
-        ::calcCollisionMtx(&mtx, pActor);
+        ::calcCollisionMtx(&mtx, pActor, false);
         pParts->setMtx(mtx);
     }
 
@@ -1709,6 +1703,7 @@ namespace MR {
         return pActor->mCollisionParts != nullptr;
     }
 
+<<<<<<< HEAD
     u32 getCollisionSensortType(const CollisionParts *pCollisionParts) {
         return pCollisionParts->mHitSensor->mType;
     }
@@ -1719,6 +1714,12 @@ namespace MR {
         
     }
 
+=======
+    u32 getCollisionSensorType(const CollisionParts* pCollisionParts) {
+        return pCollisionParts->mHitSensor->mType;
+    }
+
+>>>>>>> main
     void stopSceneAtStep(const LiveActor* pActor, s32 step, s32 sceneStep) {
         if (isStep(pActor, step)) {
             stopScene(sceneStep);

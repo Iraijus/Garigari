@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Game/LiveActor/ClippingDirector.hpp"
-#include <revolution/types.h>
 #include <JSystem/JGeometry/TMatrix.hpp>
 #include <JSystem/JGeometry/TVec.hpp>
 #include <revolution.h>
@@ -45,8 +43,8 @@ namespace MR {
     void setScale(LiveActor* pActor, const TVec3f&);
     void setScale(LiveActor* pActor, f32, f32, f32);
     void setScale(LiveActor* pActor, f32);
-    void copyTransRotateScale(const LiveActor* pToActor, LiveActor* pFromActor);
-    void copyTransRotate(const LiveActor* pToActor, LiveActor* pFromActor);
+    void copyTransRotateScale(const LiveActor* pFromActor, LiveActor* pToActor);
+    void copyTransRotate(const LiveActor* pFromActor, LiveActor* pToActor);
     void rotateAroundActor(TVec3f& rRotated, const TVec3f& rRotateOffset, const LiveActor* pActor);
 
     void initDefaultPos(LiveActor*, const JMapInfoIter&);
@@ -60,6 +58,18 @@ namespace MR {
     void setClippingTypeSphere(LiveActor* pActor, f32 clippingRadius);
     void setClippingTypeSphere(LiveActor* pActor, f32 clippingRadius, const TVec3f* pClippingPos);
     void setClippingTypeSphereContainsModelBoundingBox(LiveActor* pActor, f32 radiusExtension);
+
+    enum ClippingDistance {
+        ClippingDistance_Max = 0,
+        ClippingDistance_600m = 1,
+        ClippingDistance_500m = 2,
+        ClippingDistance_400m = 3,
+        ClippingDistance_300m = 4,
+        ClippingDistance_200m = 5,
+        ClippingDistance_100m = 6,
+        ClippingDistance_50m = 7
+    };
+
     void setClippingFar50m(LiveActor* pActor);
     void setClippingFar100m(LiveActor* pActor);
     void setClippingFar200m(LiveActor* pActor);
@@ -274,7 +284,7 @@ namespace MR {
     CollisionParts* tryCreateCollisionWaterSurface(LiveActor* pActor, HitSensor* pBodySensor);
 
     f32 getCollisionBoundingSphereRange(const LiveActor* pActor);
-    void calcModelBoundingRadius(float* outRadius, const LiveActor* actor);
+    void calcModelBoundingRadius(f32* outRadius, const LiveActor* pActor);
     bool isValidCollisionParts(LiveActor* pActor);
     void validateCollisionParts(LiveActor* pActor);
     void validateCollisionParts(CollisionParts* pCollisionParts);
@@ -290,7 +300,7 @@ namespace MR {
     void setCollisionMtx(LiveActor* pActor, CollisionParts* pCollisionParts);
     CollisionParts* getCollisionParts(LiveActor* pActor);
     bool isExistCollisionParts(const LiveActor* pActor);
-    u32 getCollisionSensortType(const CollisionParts* pCollisionParts);
+    u32 getCollisionSensorType(const CollisionParts* pCollisionParts);
 
     DemoObj* createDemoObj(const char* pName, const char* pModelName, MtxPtr pMtx);
     DemoObj* createDemoObjWithAnimArc(const char* pName, const char* pModelName, const char* pAnimArcName, MtxPtr pMtx);

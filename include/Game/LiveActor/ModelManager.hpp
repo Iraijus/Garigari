@@ -43,5 +43,6 @@ public:
     void initJointTransform();
     XjointTransform* getJointTransform(const char*);
 
-    DisplayListMaker* mDisplayListMaker;
+    /* 0x00 */ u8 _0[0x28];
+    /* 0x28 */ DisplayListMaker* mDisplayListMaker;
 };
