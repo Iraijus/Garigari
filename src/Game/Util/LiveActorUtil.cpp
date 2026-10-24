@@ -10,7 +10,9 @@
 #include "Game/LiveActor/LodCtrl.hpp"
 #include "Game/LiveActor/MirrorCamera.hpp"
 #include "Game/LiveActor/ModelManager.hpp"
+#include "Game/LiveActor/ModelObj.hpp"
 #include "Game/Map/CollisionParts.hpp"
+#include "Game/NameObj/NameObj.hpp"
 #include "Game/NameObj/NameObjExecuteHolder.hpp"
 #include "Game/NameObj/NameObjFinder.hpp"
 #include "Game/Player/GroupChecker.hpp"
@@ -18,6 +20,7 @@
 #include "Game/System/ResourceHolder.hpp"
 #include "Game/System/ResourceInfo.hpp"
 #include "Game/Util/ActorAnimUtil.hpp"
+#include "Game/Util/ActorInitUtil.hpp"
 #include "Game/Util/ActorMovementUtil.hpp"
 #include "Game/Util/ActorSensorUtil.hpp"
 #include "Game/Util/CollisionPartsFilter.hpp"
@@ -1708,6 +1711,12 @@ namespace MR {
 
     u32 getCollisionSensortType(const CollisionParts *pCollisionParts) {
         return pCollisionParts->mHitSensor->mType;
+    }
+
+    DemoObj* createDemoObj(const char *pName, const char *pModelName, MtxPtr pMtx) {
+        DemoObj* demoObj = new DemoObj(pName, pMtx);
+
+        
     }
 
     void stopSceneAtStep(const LiveActor* pActor, s32 step, s32 sceneStep) {
