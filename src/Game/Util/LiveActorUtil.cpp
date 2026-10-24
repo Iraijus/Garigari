@@ -1,5 +1,6 @@
 #include "Game/Util/LiveActorUtil.hpp"
 #include "Game/LiveActor/Binder.hpp"
+#include "Game/LiveActor/BreakModel.hpp"
 #include "Game/LiveActor/ClippingActorHolder.hpp"
 #include "Game/LiveActor/ClippingDirector.hpp"
 #include "Game/LiveActor/DisplayListMaker.hpp"
@@ -24,6 +25,7 @@
 #include "Game/Util/ActorMovementUtil.hpp"
 #include "Game/Util/ActorSensorUtil.hpp"
 #include "Game/Util/CollisionPartsFilter.hpp"
+#include "Game/Util/DemoUtil.hpp"
 #include "Game/Util/EffectUtil.hpp"
 #include "Game/Util/FurMulti.hpp"
 #include "Game/Util/GravityUtil.hpp"
@@ -1699,27 +1701,118 @@ namespace MR {
         pParts->setMtx(mtx);
     }
 
+    CollisionParts* getCollisionParts(const LiveActor* pActor) {
+        return pActor->mCollisionParts;
+    }
+
     bool isExistCollisionParts(const LiveActor* pActor) {
         return pActor->mCollisionParts != nullptr;
     }
 
-<<<<<<< HEAD
-    u32 getCollisionSensortType(const CollisionParts *pCollisionParts) {
-        return pCollisionParts->mHitSensor->mType;
-    }
-
-    DemoObj* createDemoObj(const char *pName, const char *pModelName, MtxPtr pMtx) {
-        DemoObj* demoObj = new DemoObj(pName, pMtx);
-
-        
-    }
-
-=======
     u32 getCollisionSensorType(const CollisionParts* pCollisionParts) {
         return pCollisionParts->mHitSensor->mType;
     }
 
->>>>>>> main
+    ModelObj* createModelObj(const char* pName, const char* pModelName, MtxPtr pMtx, int int_0, int int_1) {
+        ModelObj* modelObj = new ModelObj(pName, pModelName, pMtx, int_0, int_1, -2, false);
+
+        modelObj->initWithoutIter();
+
+        return modelObj;
+    }
+
+    DemoObj* createDemoObj(const char* pName, const char* pModelName, MtxPtr pMtx) {
+        DemoObj* demoObj = new DemoObj(pName, pMtx);
+
+        initActor(demoObj, pModelName, false);
+
+        demoObj->initWithoutIter();
+
+        return demoObj;
+    }
+
+    DemoObj* createDemoObjWithAnimArc(const char* pName, const char* pModelName, const char* pAnimArcName, MtxPtr pMtx) {
+        DemoObj* demoObj = new DemoObj(pName, pMtx);
+
+        initActorNoIter(demoObj, pModelName, pAnimArcName, false);
+
+        demoObj->initWithoutIter();
+
+        return demoObj;
+    }
+
+    DemoObj* createDemoObj(const char* pName, const char* pModelName, const char* pFuncName, MtxPtr pMtx) {
+        DemoObj* demoObj = new DemoObj(pName, pMtx);
+
+        initActor(demoObj, pModelName, pFuncName, false);
+
+        demoObj->initWithoutIter();
+
+        return demoObj;
+    }
+
+    DemoObj* createDemoObjWithAnimArc(const char* pName, const char* pModelName, const char* pAnimArcName, const char* pFuncName, MtxPtr pMtx) {
+        DemoObj* demoObj = new DemoObj(pName, pMtx);
+
+        initActorNoIter(demoObj, pModelName, pAnimArcName, pFuncName, false);
+
+        demoObj->initWithoutIter();
+
+        return demoObj;
+    }
+
+    ModelObj* createModelObjMapObjDecoration(const char* pName, const char* pModelName, MtxPtr pMtx) {
+        return createModelObj(pName, pModelName, pMtx, ModelObjInt_MapObjDecoration, -2);
+    }
+
+    ModelObj* createModelObjMapObj(const char* pName, const char* pModelName, MtxPtr pMtx) {
+        return createModelObj(pName, pModelName, pMtx, ModelObjInt_MapObj, -2);
+    }
+
+    ModelObj* createModelObjMapObjStrongLight(const char* pName, const char* pModelName, MtxPtr pMtx) {
+        return createModelObj(pName, pModelName, pMtx, ModelObjInt_MapObjStrongLight, -2);
+    }
+
+    ModelObj* createModelObjNoSilhouettedMapObj(const char* pName, const char* pModelName, MtxPtr pMtx) {
+        return createModelObj(pName, pModelName, pMtx, ModelObjInt_NoSilhouettedMapObj, -2);
+    }
+
+    ModelObj* createModelObjNoSilhouettedMapObjStrongLight(const char* pName, const char* pModelName, MtxPtr pMtx) {
+        return createModelObj(pName, pModelName, pMtx, ModelObjInt_NoSilhouettedMapObjStrongLight, -2);
+    }
+
+    ModelObj* createModelObjIndirectMapObj(const char* pName, const char* pModelName, MtxPtr pMtx) {
+        return createModelObj(pName, pModelName, pMtx, ModelObjInt_IndirectMapObj, -2);
+    }
+
+    ModelObj* createModelObjPlayerDecoration(const char* pName, const char* pModelName, MtxPtr pMtx) {
+        return createModelObj(pName, pModelName, pMtx, ModelObjInt_PlayerDecoration, -2);
+    }
+
+    ModelObj* createModelObjEnemy(const char* pName, const char* pModelName, MtxPtr pMtx) {
+        return createModelObj(pName, pModelName, pMtx, ModelObjInt_Enemy, 42);
+    }
+
+    ModelObj* createModelObjNpc(const char* pName, const char* pModelName, MtxPtr pMtx) {
+        return createModelObj(pName, pModelName, pMtx, ModelObjInt_NPC, -2);
+    }
+
+    ModelObj* createModelObjBloomModel(const char* pName, const char* pModelName, MtxPtr pMtx, bool registerDemo) {
+        ModelObj* modelObj = new ModelObj(pName, pModelName, pMtx, ModelObjInt_BloomModel, -2, -2, false);
+
+        modelObj->initWithoutIter();
+
+        if (registerDemo) {
+            registerDemoSimpleCastAll(modelObj);
+        }
+
+        return modelObj;
+    }
+
+    BreakModel* createBreakModel(LiveActor* pHost, MtxPtr pMtx) {
+        new BreakModel(pHost, "name", "modelname", pMtx, "pAnnimName");
+    }
+
     void stopSceneAtStep(const LiveActor* pActor, s32 step, s32 sceneStep) {
         if (isStep(pActor, step)) {
             stopScene(sceneStep);
@@ -1782,10 +1875,6 @@ namespace MR {
             tryRumblePadVeryWeak(pActor, WPAD_CHAN0);
             shakeCameraVeryWeak();
         }
-    }
-
-    CollisionParts* getCollisionParts(const LiveActor* pActor) {
-        return pActor->mCollisionParts;
     }
 
 };  // namespace MR
