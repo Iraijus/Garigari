@@ -7,12 +7,10 @@ class LiveActor;
 class NameObjExecuteInfo {
     friend class NameObjExecuteHolder;
 
-public:
     NameObjExecuteInfo();
 };
 
 class NameObjExecuteHolder : public NameObj {
-public:
     NameObjExecuteHolder(int);
 };
 
